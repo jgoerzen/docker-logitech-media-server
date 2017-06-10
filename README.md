@@ -1,144 +1,38 @@
-# Debian Working System for Docker
+# Ampache Music Server
 
-This is a simple set of images that transform the standard Docker
-Debian environment into one that provides more traditional full
-Unix APIs (including syslog, zombie process collection, etc.)
+This is a set of images that make it simple to serve up your
+music collection with [Ampache](http://www.ampache.org).  They run on top
+of my [Debian base system](http://github.com/jgoerzen/docker-debian-base),
+which provides excellent logging capabilities.
 
-Despite this, they are all very small, both in terms of disk and RAM usage.
+This image provides the Ampache server, with full support for transcoding
+on the fly.
 
-You can find a [description of the motivation for these images](http://changelog.complete.org/archives/9794-fixing-the-problems-with-docker-images) on my blog.
-
-This is loosely based on the concepts, but not the code, in the
-[phusion baseimage-docker](https://github.com/phusion/baseimage-docker).
-You can look at that link for additional discussion on the motivations.
-
-You can find the source and documentation at the [Github page](https://github.com/jgoerzen/docker-debian-base)
-and automatic builds are available from [my Docker hub page](https://hub.docker.com/jgoerzen/).
-
-This image uses sysvinit instead of systemd, not because of any
-particular opinion on the merits of them, but rather because
-sysvinit does not require any kind of privileged Docker
-or cgroups access.  
-
-Here are the images I provide from this repository:
-
-- jgoerzen/debian-base-minimal
-  - Provides working sysvinit, syslogd, cron, anacron, at, and logrotate.
-  - syslogd is configured to output to the docker log system by default.
-- jgoerzen/debian-base-standard - everything above, plus:
-  - Utilities: less, nano, vim-tiny, man-db (for viewing manpages), net-tools
-  - Email: exim4-daemon-light, mailx
-  - Network: netcat-openbsd, socat, openssl, ssh, telnet (client)
-- jgoerzen/debian-base-security - everything above, plus:
-  - automated security patches using unattended-upgrades and needrestart
-  - debian-security-support
-- jgoerzen/debian-base-apache - everything above, plus:
-  - apache2 plus utilities: ssl-cert
-  - LetsEncrypt options: certbot, acme-tiny
-- jgoerzen/debian-base-apache-php - everything above, plus:
-  - libapache2-mod-php (mod-php5 on jessie)
-
-Memory usage at boot (stretch):
-
-- jgoerzen/debian-bas-eminimal: 6MB
-- jgoerzen/debian-base-standard: 11MB
-- jgoerzen/debian-base-security: 11MB
-
-These images are autobuilt for jessie, stretch, and sid.
-
-# Install
+I provide two images: jgoerzen/debian-ampache, which is designed to be used
+with an outside MySQL/MariaDB server, and jgoerzen/debian-ampache-mysql,
+which includes an embedded MariaDB server in the image for very easy setup.
 
 You can install with:
 
-    docker pull jgoerzen/debian-base-whatever
+    docker pull jgoerzen/debian-ampache-mysql
 
-Your Dockerfile should use CMD to run `/usr/local/bin/boot-debian-base`.
+And run with:
 
-When running, use `-t` to enable the logging to `docker logs`
+    docker run -td -p 80:80 -p 443:443 --stop-signal=SIGPWR --name=ampache jgoerzen/debian-ampache-mysql
 
-# Environment Variables
-
-This environment variable is available for your use:
-
- - `DEBBASE_SYSLOG` defaults to `stdout`, which redirects all syslog activity
-   to the Docker infrastructure.  If you instead set it to `internal`, it will
-   use the default Debian configuration of logging to `/var/log` within the
-   container.  The configuration is applied at container start time by
-   adjusting the `/etc/syslog.conf` symlink to point to either `syslog.conf.internal` or
-   `syslog.conf.stdout`.  `syslog.conf.internal` is the default from the system.
-   `dpkg-divert` is used to force all packages' attempts to write to `/etc/syslog.conf`
-   to instead write to `/etc/syslog.conf.internal`.
-- `DEBBASE_TIMEZONE`, if set, will configure the `/etc/timezone` and `/etc/localtime`
-  files in the container to the appropriate timezone.
-
-# Container initialization
-
-Executables or scripts may be placed in `/usr/local/preinit`, which will be executed
-at container start time by `run-parts` prior to starting init.  These can
-therefore perform container startup steps.  A script which needs to only run
-once can delete itself after a successful run to prevent a future execution.
-
-# Orderly Shutdown
-
-You can cause `docker stop` to invoke an orderly shutdown by running the container
-like this:
-
-    docker run -td --stop-signal=SIGPWR --name=name jgoerzen/debian-base-whatever
-
-If you don't start it this way, you can instead use these steps:
-
-    docker kill -s SIGPWR container
-    sleep 10
-    docker kill container
-
-Within the container, you can call `telinit 1` to cause the container to shutdown.
-
-## Orderly Shutdown Mechanics
-
-By default, `docker stop` sends the SIGTERM (and, later, SIGKILL) signal to PID
-1 (init) iniside a container.  sysvinit does not act upon this signal.
-This will shut down a container, but it will not give your shutdown scripts
-the chance to run gracefully.  In many situations, this is fine, but it may
-not be so in all.
-
-A workaround is, howerver, readily available, without modifying init.  These
-images are configured to perform a graceful shutdown upon receiving `SIGPWR`.
-
-The process for this is... interesting, since we are unable to directly
-kill PID 1 inside a docker container.  First, init calls `/etc/init.d/powerfail`.
-The powerfail script I install simply tells init to go to single-user mode.
-This causes it to perform an orderly shutdown of the daemons, and when it is
-done, it invokes `/sbin/sulogin`.  On an ordinary system, this prompts for
-the root password for single-user mode.  In this environment, we instead
-symlink /sbin/init to /bin/true, then tell init to re-exec itself.  This
-causes PID 1 to finally exit.
-
-One of the preinit scripts makes sure that `/sbin/init` properly links to
-`/sbin/init.real` at boot time.
-
-# Configuration
-
-Althoth the standard and security images run the SMTP and SSH servers,
-they do not expose these to the Internet by default.  Both require
-site-specific configuration before they are actually useful.
-
-## Email
-
-email is the main thing you'd need to configure.  In the running system,
-`dpkg-reconfigure -plow exim4-config` will let you do this.
-
-## SSH
-
-SSH host keys will be generated upon first run of a container, if
-they do not already exist.  This implies every instantiation
-of a container containing SSH will have a new random host key.
-If you want to override this, you can of course supply your own
-files in /etc/ssh or make it a volume.
+(Omit the `-mysql` from both commands if you have a MySQL server elsewhere that you
+will connect to.)
 
 # Source
 
 This is prepared by John Goerzen <jgoerzen@complete.org> and the source
-can be found at https://github.com/jgoerzen/docker-debian-base
+can be found at https://github.com/jgoerzen/docker-debian-ampache
+
+# Security Status
+
+The Debian operating system is configured to automatically apply security patches.
+Ampache, however, does not have such a feature, nor do most of the third-party
+PHP modules it integrates.
 
 # Copyright
 
