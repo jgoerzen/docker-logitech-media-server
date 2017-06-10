@@ -12,7 +12,7 @@ I provide two images: jgoerzen/debian-ampache, which is designed to be used
 with an outside MySQL/MariaDB server, and jgoerzen/debian-ampache-mysql,
 which includes an embedded MariaDB server in the image for very easy setup.
 
-You can install with:
+You can download with:
 
     docker pull jgoerzen/debian-ampache-mysql
 
@@ -22,6 +22,14 @@ And run with:
 
 (Omit the `-mysql` from both commands if you have a MySQL server elsewhere that you
 will connect to.)
+
+# Ports
+
+By default, this image exposes a HTTP server on port 80, HTTPS on port 443, and
+also exposes port 81 in case you wish to use it separately for certbot or another
+Letsencrypt validation system.  HTTPS will require additional configuration.
+
+Ampache is exposed at path `/ampache` on the configured system. 
 
 # Source
 
