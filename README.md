@@ -37,6 +37,14 @@ Now, point a browser at http://localhost:8080/ampache and follow the
 on-screen steps, using the [Ampache install docs](https://github.com/ampache/ampache/wiki/Installation)
 as a guide.
 
+If you are using the built-in MySQL/MariaDB server, use these values:
+
+ - Database name: ampache
+ - MySQL hostname: localhost
+ - MySQL port: blank
+ - MySQL username: ampache
+ - MySQL password: ampache
+
 # Ports
 
 By default, this image exposes a HTTP server on port 80, HTTPS on port 443, and
