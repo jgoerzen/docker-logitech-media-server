@@ -8,20 +8,20 @@ which provides excellent logging capabilities.
 This image provides the Ampache server, with full support for transcoding
 on the fly.
 
-I provide two images: jgoerzen/debian-ampache, which is designed to be used
-with an outside MySQL/MariaDB server, and jgoerzen/debian-ampache-mysql,
+I provide two images: jgoerzen/ampache, which is designed to be used
+with an outside MySQL/MariaDB server, and jgoerzen/ampache-mysql,
 which includes an embedded MariaDB server in the image for very easy setup.
 
 You can download with:
 
-    docker pull jgoerzen/debian-ampache-mysql
+    docker pull jgoerzen/ampache-mysql
 
 And run with something like this:
 
     docker run -td -p 8080:80 -p 80443:443 --stop-signal=SIGPWR \
     -v /musicdir:/music:ro \
     -v /playlistdir:/playlists:rw \
-    --name=ampache jgoerzen/debian-ampache-mysql
+    --name=ampache jgoerzen/ampache-mysql
 
 (Omit the `-mysql` from both commands if you have a MySQL server elsewhere that you
 will connect to.)
@@ -56,7 +56,7 @@ Ampache is exposed at path `/ampache` on the configured system.
 # Source
 
 This is prepared by John Goerzen <jgoerzen@complete.org> and the source
-can be found at https://github.com/jgoerzen/docker-debian-ampache
+can be found at https://github.com/jgoerzen/docker-ampache
 
 # Security Status
 

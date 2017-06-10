@@ -1,4 +1,4 @@
-FROM jgoerzen/debian-ampache
+FROM jgoerzen/ampache
 MAINTAINER John Goerzen <jgoerzen@complete.org>
 RUN mv /usr/sbin/policy-rc.d.disabled /usr/sbin/policy-rc.d
 RUN apt-get update && \

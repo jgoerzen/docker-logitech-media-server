@@ -4,7 +4,7 @@ set -x
 
 buildbranch() {
         git checkout $1
-        for DIR in debian-ampache debian-ampache-mysql; do
+        for DIR in ampache ampache-mysql; do
                 cd $DIR
                 docker build -t jgoerzen/$DIR:$2 .
                 cd ..
