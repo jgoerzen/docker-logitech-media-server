@@ -1,10 +1,10 @@
-# Ampache Music Server
+# Logitech Media Server
 
 This is an image that makes it simple to serve up your
 music collection with the [Logitech Media Server](https://en.wikipedia.org/wiki/Logitech_Media_Server), which
 is also known as Slimserver and Squeezebox Server.  Many people will
 use [Squeezelite](https://en.wikipedia.org/wiki/Squeezelite) as a client for it.
- [Ampache](http://www.ampache.org).  They run on top
+It runs on top
 of my [Debian base system](http://github.com/jgoerzen/docker-debian-base),
 which provides excellent logging capabilities.
 
@@ -13,14 +13,14 @@ on the fly.
 
 You can download with:
 
-    docker pull jgoerzen/ampache-mysql
+    docker pull jgoerzen/logitech-media-server
 
 And run with something like this:
 
     docker run -td -P --stop-signal=SIGPWR \
     -v /musicdir:/music:ro \
     -v /playlistdir:/playlists:rw \
-    --name=ampache jgoerzen/logitech-media-server
+    --name=lms jgoerzen/logitech-media-server
 
 This will expose your music stored at `/musicdir` on the host in read-only mode, and your playlists
 stored at `/playlistdir` in read-write mode, to the container.  You will probably also
@@ -53,13 +53,6 @@ Perl modules it integrates.
  - [Download page](http://downloads.slimdevices.com/)
  - [Home page](http://wiki.slimdevices.com/index.php/SlimServer)
 
-
-# Tags
-
-These Docker tags are defined:
-
- - latest is built against the Ampache github master branch (which they recommend)
- - Other branches use the versioned tarballs
 
 # Copyright
 
