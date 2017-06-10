@@ -16,12 +16,26 @@ You can download with:
 
     docker pull jgoerzen/debian-ampache-mysql
 
-And run with:
+And run with something like this:
 
-    docker run -td -p 80:80 -p 443:443 --stop-signal=SIGPWR --name=ampache jgoerzen/debian-ampache-mysql
+    docker run -td -p 8080:80 -p 80443:443 --stop-signal=SIGPWR \
+    -v /musicdir:/music:ro \
+    -v /playlistdir:/playlists:rw \
+    --name=ampache jgoerzen/debian-ampache-mysql
 
 (Omit the `-mysql` from both commands if you have a MySQL server elsewhere that you
 will connect to.)
+
+This will expose your music stored at `/musicdir` on the host in read-only mode, and your playlists
+stored at `/playlistdir` in read-write mode, to the container.  You will probably also
+want to add a `-v` in some fashion covering `/var/www/html/ampache/config`, since that you will want
+to preserve those files as well.
+
+# Setup
+
+Now, point a browser at http://localhost:8080/ampache and follow the
+on-screen steps, using the [Ampache install docs](https://github.com/ampache/ampache/wiki/Installation)
+as a guide.
 
 # Ports
 
