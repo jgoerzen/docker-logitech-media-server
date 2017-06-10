@@ -8,13 +8,13 @@ RUN apt-get update && \
     apt-get -y -u dist-upgrade && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 COPY setup/ /tmp/setup/
-COPY 99-ampache.ini /etc/php/7.0/apache2/conf.d/
 RUN /tmp/setup/setup.sh
 RUN cd /var/www/html/ampache && \
     mkdir lib/vendor lib/components && \
     chown www-data lib/vendor lib/components && \
     su www-data -s /bin/bash -c 'composer install --prefer-source --no-interaction' && \
     chown -R root:root /var/www/html/ampache
+COPY 99-ampache.ini /etc/php/7.0/apache2/conf.d/
 RUN a2enmod rewrite && \
     a2enmod ssl && \
     ln -s html/ampache /var/www/ampache
