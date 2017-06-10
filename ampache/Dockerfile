@@ -8,6 +8,7 @@ RUN apt-get update && \
     apt-get -y -u dist-upgrade && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 COPY setup/ /tmp/setup/
+COPY 99-ampache.ini /etc/php/7.0/apache2/conf.d/
 RUN /tmp/setup/setup.sh
 RUN cd /var/www/html/ampache && \
     mkdir lib/vendor lib/components && \

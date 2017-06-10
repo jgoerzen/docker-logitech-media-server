@@ -43,8 +43,15 @@ If you are using the built-in MySQL/MariaDB server, use these values:
  - Database name: ampache
  - MySQL hostname: localhost
  - MySQL port: blank
- - MySQL username: ampache
- - MySQL password: ampache
+ - MySQL (administrative) username: ampache
+ - MySQL (administrative) password: ampache
+ - Create database: uncheck
+
+Other suggestions:
+
+ - Template configuration: ffmpeg
+
+Once configured, add a catalog pointing to `/music` at <http://localhost:8080/ampache/index.php#admin/catalog.php?action=show_add_catalog>, and another for `/playlists`.
 
 # Ports
 
