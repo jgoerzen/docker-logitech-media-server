@@ -72,6 +72,19 @@ The Debian operating system is configured to automatically apply security patche
 Ampache, however, does not have such a feature, nor do most of the third-party
 PHP modules it integrates.
 
+There is some security risk in making the installation directory writable by
+the web server process.  This is restricted as much as possible in this image.
+A side-effect of that, however, is the disabling of the Ampache auto-update
+feature.  If you wish to be able to use Ampache's built-in updates, you
+should `chown -R www-data:www-data /var/www/html/ampache`.
+
+# Tags
+
+These Docker tags are defined:
+
+ - latest is built against the Ampache github master branch (which they recommend)
+ - Other branches use the versioned tarballs
+
 # Copyright
 
 Docker scripts, etc. are
