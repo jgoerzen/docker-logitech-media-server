@@ -29,7 +29,8 @@ will connect to.)
 This will expose your music stored at `/musicdir` on the host in read-only mode, and your playlists
 stored at `/playlistdir` in read-write mode, to the container.  You will probably also
 want to add a `-v` in some fashion covering `/var/www/html/ampache/config`, since that you will want
-to preserve those files as well.
+to preserve those files as well.  If using the built-in MySQL, you'll also want to preserve
+`/var/lib/mysql`.
 
 # Setup
 

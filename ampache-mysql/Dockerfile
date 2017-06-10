@@ -8,7 +8,7 @@ RUN apt-get update && \
 RUN /usr/local/bin/docker-wipelogs
 RUN mv /usr/sbin/policy-rc.d /usr/sbin/policy-rc.d.disabled
 RUN /etc/init.d/mysql start && sleep 10 && \
-    test -e /var/run/mysqld/mysqld.sock && \
+    while [ ! -e /var/run/mysqld/mysqld.sock ]; do sleep 1; done; sleep 1 && \
     mysql -e 'CREATE DATABASE ampache' && \
     mysql -e "GRANT ALL on ampache.* TO 'ampache'@'localhost' IDENTIFIED BY 'ampache'" && \
     mysql -e "FLUSH PRIVILEGES" && \
