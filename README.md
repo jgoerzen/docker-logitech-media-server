@@ -1,16 +1,15 @@
 # Ampache Music Server
 
-This is a set of images that make it simple to serve up your
-music collection with [Ampache](http://www.ampache.org).  They run on top
+This is an image that makes it simple to serve up your
+music collection with the [Logitech Media Server](https://en.wikipedia.org/wiki/Logitech_Media_Server), which
+is also known as Slimserver and Squeezebox Server.  Many people will
+use [Squeezelite](https://en.wikipedia.org/wiki/Squeezelite) as a client for it.
+ [Ampache](http://www.ampache.org).  They run on top
 of my [Debian base system](http://github.com/jgoerzen/docker-debian-base),
 which provides excellent logging capabilities.
 
-This image provides the Ampache server, with full support for transcoding
+This image provides the server, with full support for transcoding
 on the fly.
-
-I provide two images: jgoerzen/ampache, which is designed to be used
-with an outside MySQL/MariaDB server, and jgoerzen/ampache-mysql,
-which includes an embedded MariaDB server in the image for very easy setup.
 
 You can download with:
 
@@ -18,40 +17,19 @@ You can download with:
 
 And run with something like this:
 
-    docker run -td -p 8080:80 -p 80443:443 --stop-signal=SIGPWR \
+    docker run -td -P --stop-signal=SIGPWR \
     -v /musicdir:/music:ro \
     -v /playlistdir:/playlists:rw \
-    --name=ampache jgoerzen/ampache-mysql
-
-(Omit the `-mysql` from both commands if you have a MySQL server elsewhere that you
-will connect to.)
+    --name=ampache jgoerzen/logitech-media-server
 
 This will expose your music stored at `/musicdir` on the host in read-only mode, and your playlists
 stored at `/playlistdir` in read-write mode, to the container.  You will probably also
-want to add a `-v` in some fashion covering `/var/www/html/ampache/config`, since that you will want
-to preserve those files as well.  If using the built-in MySQL, you'll also want to preserve
-`/var/lib/mysql`.
+want to add a `-v` in some fashion covering `/var/lib/squeezeboxserver/prefs`, since that you will want
+to preserve those files as well.
 
-# Setup
+Now, connect to http://localhost:9000/ to configure the system.
 
-Now, point a browser at http://localhost:8080/ampache and follow the
-on-screen steps, using the [Ampache install docs](https://github.com/ampache/ampache/wiki/Installation)
-as a guide.
-
-If you are using the built-in MySQL/MariaDB server, use these values:
-
- - Database name: ampache
- - MySQL hostname: localhost
- - MySQL port: blank
- - MySQL (administrative) username: ampache
- - MySQL (administrative) password: ampache
- - Create database: uncheck
-
-Other suggestions:
-
- - Template configuration: ffmpeg
-
-Once configured, add a catalog pointing to `/music` at <http://localhost:8080/ampache/index.php#admin/catalog.php?action=show_add_catalog>, and another for `/playlists`.
+Once configured, add a catalog pointing to `/music` and set your playlist directory to `/playlists`.
 
 # Ports
 
@@ -59,24 +37,22 @@ By default, this image exposes a HTTP server on port 80, HTTPS on port 443, and
 also exposes port 81 in case you wish to use it separately for certbot or another
 Letsencrypt validation system.  HTTPS will require additional configuration.
 
-Ampache is exposed at path `/ampache` on the configured system. 
-
 # Source
 
 This is prepared by John Goerzen <jgoerzen@complete.org> and the source
-can be found at https://github.com/jgoerzen/docker-ampache
+can be found at https://github.com/jgoerzen/docker-logitech-media-server
 
 # Security Status
 
 The Debian operating system is configured to automatically apply security patches.
-Ampache, however, does not have such a feature, nor do most of the third-party
-PHP modules it integrates.
+Logitech Media Server, however, does not have such a feature, nor do most of the third-party
+Perl modules it integrates.
 
-There is some security risk in making the installation directory writable by
-the web server process.  This is restricted as much as possible in this image.
-A side-effect of that, however, is the disabling of the Ampache auto-update
-feature.  If you wish to be able to use Ampache's built-in updates, you
-should `chown -R www-data:www-data /var/www/html/ampache`.
+# Links
+
+ - [Download page](http://downloads.slimdevices.com/)
+ - [Home page](http://wiki.slimdevices.com/index.php/SlimServer)
+
 
 # Tags
 
