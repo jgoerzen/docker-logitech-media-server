@@ -1,4 +1,4 @@
-FROM jgoerzen/debian-base-apache-php:stretch
+FROM jgoerzen/debian-base-apache-php
 MAINTAINER John Goerzen <jgoerzen@complete.org>
 RUN mv /usr/sbin/policy-rc.d.disabled /usr/sbin/policy-rc.d
 RUN apt-get update && \
@@ -15,7 +15,7 @@ RUN /tmp/setup/setup.sh
 RUN chown -R www-data /var/www/ampache/config && \
     for FILE in channel rest play; do \
       chown www-data /var/www/ampache/$FILE; \
-      chown www-data /var/www/ampache/$FILE/.htaccess || true;
+      chown www-data /var/www/ampache/$FILE/.htaccess || true; \
       done
 RUN /usr/local/bin/docker-wipelogs
 RUN mv /usr/sbin/policy-rc.d /usr/sbin/policy-rc.d.disabled
