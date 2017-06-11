@@ -17,7 +17,9 @@ You can download with:
 
 And run with something like this:
 
-    docker run -td -P --stop-signal=SIGPWR \
+    docker run -td \
+    -p 9000:9000 -p 9090:9090 -p 3483:3483 -p 3483:3483/udp -p 1900:1900/udp \
+    --stop-signal=SIGPWR \
     -v /musicdir:/music:ro \
     -v /playlistdir:/playlists:rw \
     --name=lms jgoerzen/logitech-media-server
