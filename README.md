@@ -31,7 +31,7 @@ to preserve those files as well.
 
 Now, connect to http://localhost:9000/ to configure the system.
 
-Once configured, add a catalog pointing to `/music` and set your playlist directory to `/playlists`.
+During configuration, tell it your music is in `/music` and set your playlist directory to `/playlists`.
 
 # Ports
 
