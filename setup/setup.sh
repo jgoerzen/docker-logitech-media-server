@@ -4,9 +4,10 @@ set -e
 set -x
 
 cd /tmp/setup
-wget http://downloads.slimdevices.com/LogitechMediaServer_v7.9.0/logitechmediaserver_7.9.0_amd64.deb
+# See http://downloads.slimdevices.com/
+wget http://downloads.slimdevices.com/LogitechMediaServer_v7.9.1/logitechmediaserver_7.9.1_amd64.deb
 sha256sum -c < sums
-dpkg -i logitechmediaserver_7.9.0_amd64.deb
+dpkg -i logitechmediaserver_7.9.1_amd64.deb
 cd /
 rm -rf /tmp/setup
 
